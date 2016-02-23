@@ -90,6 +90,10 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Plankton, Version=1.0.5885.33540, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Plankton.1.0.0.2\lib\Plankton.dll</HintPath>
       <Private>True</Private>
@@ -122,17 +126,41 @@
     <Compile Include="Archivator.cs" />
     <Compile Include="Cipher.cs" />
     <Compile Include="DBManager.cs" />
+    <Compile Include="FtpUploader.cs" />
     <Compile Include="GoogleDriveUploader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs" />
+    <Compile Include="SQLExporter.cs" />
+    <Compile Include="Transforms.cs">
+      <DependentUpon>Transforms.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Transforms.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Transforms.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Transforms.xsc">
+      <DependentUpon>Transforms.xsd</DependentUpon>
+    </None>
+    <None Include="Transforms.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Transforms.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Transforms.xss">
+      <DependentUpon>Transforms.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLScripts\Backup.sql" />
     <Content Include="SQLScripts\Restore.sql" />
+    <Content Include="Transforms.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx" />

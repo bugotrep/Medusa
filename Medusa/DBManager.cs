@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using NLog;
 
 namespace Medusa
 {
 	public static class DBManager
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		public static void Backup(string connectionString, string database, string backupPath)
 		{
 			ExecuteSqlScriptWithGo(connectionString, Resources.Backup, database, backupPath);
@@ -23,33 +26,62 @@ namespace Medusa
 
 		public static void ExecuteSqlScriptWithGo(string connectionString, string sqlScript, string databaseName, string backupPath)
 		{
-			string sql = string.Format(sqlScript, databaseName, backupPath.EndWith("\\"));
-			ExecuteSqlScriptWithGo(connectionString, sql);
+			try
+			{
+				string sql = string.Format(sqlScript, databaseName, backupPath.EndWith("\\"));
+				ExecuteSqlScriptWithGo(connectionString, sql);
+			}
+			catch(Exception ex)
+			{
+				logger.Error(ex, "Error executing script.");
+				throw;
+			}
 		}
 
 		public static void ExecuteSqlScriptWithGo(string connectionString, string sql)
 		{
-			using(SqlConnection connection = new SqlConnection(connectionString))
+			try
 			{
-				Server server = new Server(new ServerConnection(connection));
-				server.ConnectionContext.ExecuteNonQuery(sql);
+				using(SqlConnection connection = new SqlConnection(connectionString))
+				{
+					Server server = new Server(new ServerConnection(connection));
+					server.ConnectionContext.ExecuteNonQuery(sql);
+				}
+			}
+			catch(Exception ex)
+			{
+				logger.Error(ex, "Error executing script.");
+				throw;
 			}
 		}
 
 		public static IEnumerable<string> GetDatabases(string connectionString)
 		{
-			using(SqlConnection connection = new SqlConnection(connectionString))
+			SqlDataReader reader = null;
+			try
 			{
-				connection.Open();
-				SqlCommand command = new SqlCommand("SELECT [name] FROM [master].[sys].[databases] WHERE [owner_sid] <> 0x01", connection)
+				using(SqlConnection connection = new SqlConnection(connectionString))
 				{
-					CommandType = System.Data.CommandType.Text,
-				};
-				var reader = command.ExecuteReader();
-				while(reader.Read())
-				{
-					yield return reader.GetString(0);
+					connection.Open();
+					SqlCommand command = new SqlCommand("SELECT [name] FROM [master].[sys].[databases] WHERE [owner_sid] <> 0x01", connection)
+					{
+						CommandType = System.Data.CommandType.Text,
+					};
+					reader = command.ExecuteReader();
 				}
+			}
+			catch(Exception ex)
+			{
+				logger.Error(ex, "Error executing script.");
+				throw;
+			}
+			if(reader == null)
+			{
+				yield break;
+			}
+			while(reader.Read())
+			{
+				yield return reader.GetString(0);
 			}
 		}
 		public static void BackupAllDatabases(string connectionString, string backupPath)

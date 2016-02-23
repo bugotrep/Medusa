@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<queries>
+	<query name="contacts">
+		<field name="PROFILE">
+			<transform type="regex" pattern="\r\n"><![CDATA[<br />]]></transform>
+			<transform type="regex" pattern="\n"><![CDATA[<br />]]></transform>
+			<transform type="regex" pattern="\r"><![CDATA[<br />]]></transform>
+			<transform type="format">{0:yyyy-MM-dd HH:mm}</transform>
+		</field>
+	</query>
+	<!--<query name="data">
+		<field name="Description">
+			<transform type="regex" pattern="\r\n"><![CDATA[<br />]]></transform>
+		</field>
+	</query>-->
+</queries>
