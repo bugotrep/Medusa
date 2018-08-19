@@ -40,13 +40,13 @@ namespace Medusa
 			// Optionally, write an entry for the directory itself.
 			// Specify false for recursion here if we will add the directory's files individually.
 			//
-			TarEntry tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
+			var tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
 			tarArchive.WriteEntry(tarEntry, false);
 
 			// Write each file to the tar.
 			//
-			string[] filenames = Directory.GetFiles(sourceDirectory);
-			foreach(string filename in filenames)
+			var filenames = Directory.GetFiles(sourceDirectory);
+			foreach (string filename in filenames)
 			{
 				tarEntry = TarEntry.CreateEntryFromFile(filename);
 				tarArchive.WriteEntry(tarEntry, true);
@@ -54,8 +54,8 @@ namespace Medusa
 
 			if(recurse)
 			{
-				string[] directories = Directory.GetDirectories(sourceDirectory);
-				foreach(string directory in directories)
+				var directories = Directory.GetDirectories(sourceDirectory);
+				foreach (string directory in directories)
 				{
 					tarArchive.AddDirectoryFiles(directory, recurse);
 				}

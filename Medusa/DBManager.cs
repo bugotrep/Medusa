@@ -28,8 +28,8 @@ namespace Medusa
 		{
 			try
 			{
-				string sql = string.Format(sqlScript, databaseName, backupPath.EndWith("\\"));
-				ExecuteSqlScriptWithGo(connectionString, sql);
+				var sql = string.Format(sqlScript, databaseName, backupPath.EndWith("\\"));
+                ExecuteSqlScriptWithGo(connectionString, sql);
 			}
 			catch(Exception ex)
 			{
@@ -44,8 +44,8 @@ namespace Medusa
 			{
 				using(SqlConnection connection = new SqlConnection(connectionString))
 				{
-					Server server = new Server(new ServerConnection(connection));
-					server.ConnectionContext.ExecuteNonQuery(sql);
+					var server = new Server(new ServerConnection(connection));
+                    server.ConnectionContext.ExecuteNonQuery(sql);
 				}
 			}
 			catch(Exception ex)
@@ -63,11 +63,11 @@ namespace Medusa
 				using(SqlConnection connection = new SqlConnection(connectionString))
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand("SELECT [name] FROM [master].[sys].[databases] WHERE [owner_sid] <> 0x01", connection)
+					var command = new SqlCommand("SELECT [name] FROM [master].[sys].[databases] WHERE [owner_sid] <> 0x01", connection)
 					{
 						CommandType = System.Data.CommandType.Text,
 					};
-					reader = command.ExecuteReader();
+                    reader = command.ExecuteReader();
 				}
 			}
 			catch(Exception ex)

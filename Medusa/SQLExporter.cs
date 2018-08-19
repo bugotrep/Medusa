@@ -47,8 +47,8 @@ namespace YHSQLExport
 			logger.Info("Executing file: {0}", file);
 			var sql = File.ReadAllText(file);
 			logger.Info("Executing sql command: {0}", sql);
-			string fileName = Path.GetFileNameWithoutExtension(file);
-			var transforms = GetTransforms(fileName);
+			var fileName = Path.GetFileNameWithoutExtension(file);
+            var transforms = GetTransforms(fileName);
 			var csvName = Path.Combine(exportDirectory, fileName + ".csv");
 			using(SqlCommand command = new SqlCommand(sql, connection)
 			{
@@ -63,8 +63,8 @@ namespace YHSQLExport
 						int lines = 0;
 						while(reader.Read())
 						{
-							object[] row = new object[reader.FieldCount];
-							reader.GetValues(row);
+							var row = new object[reader.FieldCount];
+                            reader.GetValues(row);
 							try
 							{
 								TransformData(reader, row, transforms);
@@ -84,8 +84,8 @@ namespace YHSQLExport
 
 		private static IEnumerable<XElement> GetTransforms(string query)
 		{
-			XDocument xml = XDocument.Load("Transforms.xml");
-			var result = xml.Descendants("query")
+			var xml = XDocument.Load("Transforms.xml");
+            var result = xml.Descendants("query")
 				.FirstOrDefault(q => q.Attribute("name").Value == query);
 			return result == null ? new List<XElement>() : result.Elements("field");
 		}
@@ -97,12 +97,12 @@ namespace YHSQLExport
 				foreach(var transform in field.Descendants("transform"))
 				{
 					int index = reader.GetOrdinal(field.Attribute("name").Value);
-					string result = row[index].ToString();
-					switch(transform.Attribute("type").Value)
+					var result = row[index].ToString();
+                    switch (transform.Attribute("type").Value)
 					{
 					case "regex":
-						string pattern = transform.Attribute("pattern").Value;
-						result = new Regex(pattern).Replace(row[index].ToString(), transform.Value);
+						var pattern = transform.Attribute("pattern").Value;
+                            result = new Regex(pattern).Replace(row[index].ToString(), transform.Value);
 						break;
 
 					case "format":
